@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% block title %}eSkills - Shopping Cart{% endblock %} {% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="flex items-center justify-between mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+        <a href="{{ url_for('courses.index') }}" class="text-blue-600 hover:text-blue-500"> <i class="fas fa-arrow-left mr-2"></i>Continue Shopping </a>
+    </div>
+
+    {% if cart.items %}
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <ul role="list" class="divide-y divide-gray-200">
+            {% for item in cart.items %}
+            <li class="p-6 hover:bg-gray-50 transition-colors duration-200">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 w-24 h-24">
+                        <img src="{{ item.course.media.image.raw }}" alt="{{ item.course.name }}" class="w-full h-full object-cover rounded-lg" />
+                    </div>
+                    <div class="ml-4 flex-1">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-medium text-gray-900">{{ item.course.name }}</h3>
+                                <p class="mt-1 text-sm text-gray-500">{{ item.course.short_description }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-medium text-gray-900">${{ "%.2f"|format(item.course.price) }}</p>
+                                <form action="{{ url_for('cart.remove', course_id=item.course.id) }}" method="POST" class="mt-2">
+                                    <button type="submit" class="text-sm text-red-600 hover:text-red-500"><i class="fas fa-trash-alt mr-1"></i>Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex items-center text-sm text-gray-500">
+                            <div class="flex items-center mr-4">
+                                <i class="far fa-calendar-alt mr-1"></i>
+                                <span>{{ item.course.start_date }}</span>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-tachometer-alt mr-1"></i>
+                                <span>{{ item.course.pacing_type }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="px-6 py-4 bg-gray-50">
+            <div class="flex justify-between items-center">
+                <div class="text-lg font-medium text-gray-900">Total: <span class="text-blue-600">${{ "%.2f"|format(cart.total) }}</span></div>
+                <a href="{{ url_for('cart.checkout') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"> <i class="fas fa-lock mr-2"></i>Proceed to Checkout </a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-12">
+        <i class="fas fa-shopping-cart text-gray-400 text-6xl mb-4"></i>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
+        <p class="text-gray-500 mb-8">Browse our courses and start learning today!</p>
+        <a href="{{ url_for('courses.index') }}" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"> <i class="fas fa-search mr-2"></i>Browse Courses </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

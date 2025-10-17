@@ -1,0 +1,428 @@
+{% extends "base.html" %}
+
+{% block title %}{% if course %}{{ course.get('name', 'Course') }} - eSkills{% else %}Course Not Found - eSkills{% endif %}{% endblock %}
+
+{% block content %}
+<!-- Error State -->
+{% if error %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl p-8 transform hover:scale-[1.02] transition-transform duration-300">
+                <div class="text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6">
+                        <i class="bi bi-exclamation-triangle text-red-500 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-2">Error</h4>
+                    <p class="text-gray-600 mb-6">{{ error }}</p>
+                    <a href="{{ url_for('courses.index') }}" 
+                       class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors duration-200 transform hover:scale-105">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Back to Courses
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% elif not course %}
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+    <div class="container mx-auto px-4">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl p-8 transform hover:scale-[1.02] transition-transform duration-300">
+                <div class="text-center">
+                    <div class="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-6">
+                        <i class="bi bi-exclamation-triangle text-red-500 text-2xl"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-gray-900 mb-2">Course Not Found</h4>
+                    <p class="text-gray-600 mb-6">The requested course could not be found.</p>
+                    <a href="{{ url_for('courses.index') }}" 
+                       class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors duration-200 transform hover:scale-105">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        Back to Courses
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Course Hero Section -->
+<div class="bg-gradient-to-br from-primary/5 to-primary/10 min-h-screen">
+    <div class="container mx-auto px-4 py-12">
+        <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Course Info -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+                    <!-- Course Header -->
+                    <div class="flex flex-wrap items-start gap-4 mb-8">
+                        <div class="flex-grow">
+                            <div class="flex gap-2 mb-4">
+                                {% if course.get('org') %}
+                                <span class="px-4 py-1.5 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                                    {{ course.org }}
+                                </span>
+                                {% endif %}
+                                {% if course.get('number') %}
+                                <span class="px-4 py-1.5 bg-gray-100 text-gray-700 rounded-full text-sm font-medium">
+                                    {{ course.number }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            <h1 class="text-4xl font-bold text-gray-900 mb-4 leading-tight">{{ course.get('name', 'Course') }}</h1>
+                            
+                            <!-- Course Meta -->
+                            <div class="flex flex-wrap gap-6 text-gray-600">
+                                {% if course.get('start_display') %}
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                        <i class="bi bi-calendar3 text-primary"></i>
+                                    </div>
+                                    <span>Starts {{ course.start_display }}</span>
+                                </div>
+                                {% endif %}
+                                {% if course.get('pacing') %}
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                        <i class="bi bi-clock text-primary"></i>
+                                    </div>
+                                    <span>{{ course.pacing|title }} Paced</span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course Image -->
+                    {% if course.get('media', {}).get('image', {}).get('raw') %}
+                    <div class="relative rounded-2xl overflow-hidden mb-8 aspect-video">
+                        <img src="{{ course.media.image.raw }}" 
+                             alt="{{ course.get('name', 'Course') }}" 
+                             class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-500">
+                    </div>
+                    {% endif %}
+
+                    <!-- Course Description -->
+                    <div class="prose max-w-none">
+                        <p class="text-xl text-gray-600 leading-relaxed mb-8">
+                            {{ course.get('short_description', 'No description available.') }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Course Details -->
+                <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Course Overview</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <!-- Course Type -->
+                        <div class="bg-gray-50 rounded-2xl p-6 transform hover:scale-105 transition-all duration-300">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
+                                    <i class="bi bi-book text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-1">Course Type</h3>
+                                    <p class="text-gray-600">{{ course.get('pacing', 'Self-paced')|title }} Paced</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Effort -->
+                        {% if course.get('effort') %}
+                        <div class="bg-gray-50 rounded-2xl p-6 transform hover:scale-105 transition-all duration-300">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
+                                    <i class="bi bi-clock text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-1">Effort</h3>
+                                    <p class="text-gray-600">{{ course.effort }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Institution -->
+                        {% if course.get('org') %}
+                        <div class="bg-gray-50 rounded-2xl p-6 transform hover:scale-105 transition-all duration-300">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
+                                    <i class="bi bi-building text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-1">Institution</h3>
+                                    <p class="text-gray-600">{{ course.org }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Language -->
+                        <div class="bg-gray-50 rounded-2xl p-6 transform hover:scale-105 transition-all duration-300">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
+                                    <i class="bi bi-translate text-primary text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-gray-900 mb-1">Language</h3>
+                                    <p class="text-gray-600">English</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Content -->
+                {% if course.get('overview') %}
+                <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">About This Course</h2>
+                    <div class="prose max-w-none course-content">
+                        {{ course.overview|safe }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Prerequisites -->
+                {% if course.get('prerequisites') %}
+                <div class="bg-white rounded-3xl shadow-2xl p-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Prerequisites</h2>
+                    <div class="prose max-w-none course-content">
+                        {{ course.prerequisites|safe }}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Enrollment Card -->
+            <div class="lg:col-span-1">
+                <div class="sticky top-8">
+                    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                        <!-- Price Header -->
+                        <div class="bg-gradient-to-r from-primary/5 to-primary/10 p-8 text-center">
+                            {% if course.get('price', 0) > 0 %}
+                            <div class="mb-2">
+                                <span class="text-4xl font-bold text-gray-900">
+                                    {{ course.get('currency', 'USD') }} {{ "%.2f"|format(course.get('price', 0)) }}
+                                </span>
+                            </div>
+                            {% else %}
+                            <div class="mb-2">
+                                <span class="text-4xl font-bold text-green-600">Free</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="p-8">
+                            <!-- Enrollment Actions -->
+                            <div class="space-y-4">
+                                {% if current_user.is_authenticated %}
+                                    {% if is_enrolled %}
+                                    <a href="{{ url_for('courses.learn', course_id=course.get('id')) }}" 
+                                       class="flex items-center justify-center w-full px-8 py-4 bg-primary text-white rounded-xl hover:bg-primary-dark transform hover:scale-105 transition-all duration-300">
+                                        <i class="bi bi-play-circle me-2"></i>
+                                        Continue Learning
+                                    </a>
+                                    {% else %}
+                                        {% if course.get('price', 0) > 0 %}
+                                        <form action="{{ url_for('cart.add', course_id=course.get('id')) }}" method="POST">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <input type="hidden" name="mode" value="verified">
+                                            <button type="submit" 
+                                                    class="flex items-center justify-center w-full px-8 py-4 bg-primary text-white rounded-xl hover:bg-primary-dark transform hover:scale-105 transition-all duration-300">
+                                                <i class="bi bi-cart-plus me-2"></i>
+                                                Add to Cart
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <form action="{{ url_for('courses.enroll', course_id=course.get('id')) }}" method="POST">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                            <button type="submit" 
+                                                    class="flex items-center justify-center w-full px-8 py-4 bg-primary text-white rounded-xl hover:bg-primary-dark transform hover:scale-105 transition-all duration-300">
+                                                <i class="bi bi-person-plus me-2"></i>
+                                                Enroll Now
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{{ url_for('auth.login') }}" 
+                                       class="flex items-center justify-center w-full px-8 py-4 bg-primary text-white rounded-xl hover:bg-primary-dark transform hover:scale-105 transition-all duration-300">
+                                        <i class="bi bi-box-arrow-in-right me-2"></i>
+                                        Login to Enroll
+                                    </a>
+                                {% endif %}
+                            </div>
+
+                            <hr class="my-8 border-gray-200">
+
+                            <!-- Course Features -->
+                            <div>
+                                <h5 class="text-lg font-semibold text-gray-900 mb-4">This course includes:</h5>
+                                <ul class="space-y-4">
+                                    {% if course.mobile_available %}
+                                    <li class="flex items-center">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
+                                            <i class="bi bi-phone text-primary"></i>
+                                        </div>
+                                        <span class="text-gray-600">Mobile learning</span>
+                                    </li>
+                                    {% endif %}
+                                    <li class="flex items-center">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
+                                            <i class="bi bi-award text-primary"></i>
+                                        </div>
+                                        <span class="text-gray-600">
+                                            {% if course.price > 0 %}Verified Certificate{% else %}Course Certificate{% endif %}
+                                        </span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
+                                            <i class="bi bi-infinity text-primary"></i>
+                                        </div>
+                                        <span class="text-gray-600">Full lifetime access</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center mr-4">
+                                            <i class="bi bi-globe text-primary"></i>
+                                        </div>
+                                        <span class="text-gray-600">Access on all devices</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<script>
+function createPaymentIntent(courseId) {
+    fetch('/payment/create-payment-intent', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+            course_id: courseId
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect_url;
+        } else {
+            alert('Error creating payment intent: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error creating payment intent. Please try again.');
+    });
+}
+</script>
+
+<style>
+:root {
+    --primary: #3B82F6;
+    --primary-dark: #2563EB;
+}
+
+.bg-primary {
+    background-color: var(--primary);
+}
+
+.bg-primary-dark {
+    background-color: var(--primary-dark);
+}
+
+.text-primary {
+    color: var(--primary);
+}
+
+.border-primary {
+    border-color: var(--primary);
+}
+
+.hover\:bg-primary-dark:hover {
+    background-color: var(--primary-dark);
+}
+
+.course-content {
+    color: #374151;
+}
+
+.course-content h1,
+.course-content h2,
+.course-content h3,
+.course-content h4,
+.course-content h5,
+.course-content h6 {
+    color: #111827;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.course-content p {
+    margin-bottom: 1.5rem;
+    line-height: 1.8;
+}
+
+.course-content img {
+    border-radius: 1rem;
+    margin: 2rem 0;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.course-content ul,
+.course-content ol {
+    margin: 1.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.course-content li {
+    margin-bottom: 0.75rem;
+}
+
+.course-content a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.course-content a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .grid {
+        gap: 1.5rem;
+    }
+}
+</style>
+{% endblock %} 

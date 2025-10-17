@@ -1,0 +1,71 @@
+{% extends "base.html" %} {% block title %}eSkills - Shopping Cart{% endblock %} {% block content %}
+<div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Shopping Cart</h1>
+    <p class="text-gray-600">Review your selected courses and proceed to checkout</p>
+</div>
+
+{% if not items %}
+<div class="bg-white rounded-lg shadow-lg p-6 text-center">
+    <i class="fas fa-shopping-cart text-gray-400 text-6xl mb-4"></i>
+    <p class="text-gray-600 text-lg">Your cart is empty</p>
+    <a href="{{ url_for('courses.index') }}" class="inline-block mt-4 bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700"> Browse Courses </a>
+</div>
+{% else %}
+<div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div class="divide-y divide-gray-200">
+        {% for item in items %}
+        <div class="p-6 flex items-center">
+            <div class="flex-shrink-0 w-24 h-24">
+                {% if item.course.media and item.course.media.image %}
+                <img src="{{ item.course.media.image.raw }}" alt="{{ item.course.name }}" class="w-full h-full object-cover rounded-lg" />
+                {% else %}
+                <div class="w-full h-full bg-gray-200 flex items-center justify-center rounded-lg">
+                    <i class="fas fa-book text-2xl text-gray-400"></i>
+                </div>
+                {% endif %}
+            </div>
+            <div class="ml-6 flex-1">
+                <h3 class="text-lg font-medium text-gray-900">{{ item.course.name }}</h3>
+                <p class="mt-1 text-sm text-gray-500">{{ item.course.short_description[:100] }}...</p>
+                <div class="mt-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize"> {{ item.item.mode.replace('-', ' ') }} </span>
+                </div>
+            </div>
+            <div class="ml-6">
+                <p class="text-lg font-medium text-gray-900">{% if item.item.price > 0 %} {{ item.item.currency }} {{ item.item.price }} {% else %} Free {% endif %}</p>
+                {% if item.selected_mode %}
+                <p class="text-sm text-gray-500">{% if item.selected_mode.mode_slug == 'verified' %} Includes verified certificate {% elif item.selected_mode.mode_slug == 'professional' %} Professional certificate track {% elif item.selected_mode.mode_slug == 'audit' %} Audit track {% endif %}</p>
+                {% endif %}
+            </div>
+            <div class="ml-6">
+                <form action="{{ url_for('cart.remove_from_cart', course_id=item.course.id) }}" method="POST">
+                    <button type="submit" class="text-red-600 hover:text-red-900">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="bg-gray-50 px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <p class="text-lg font-medium text-gray-900">Total</p>
+                <p class="text-sm text-gray-500">{{ items|length }} course(s)</p>
+            </div>
+            <div class="text-right">
+                <p class="text-2xl font-bold text-gray-900">{% set total = {'USD': 0} %} {% for item in items %} {% if item.item.currency == 'USD' %} {% set _ = total.update({'USD': total['USD'] + item.item.price}) %} {% endif %} {% endfor %} USD {{ "%.2f"|format(total['USD']) }}</p>
+            </div>
+        </div>
+        <div class="mt-4">
+            <form action="{{ url_for('cart.checkout') }}" method="POST">
+                <button type="submit" class="w-full bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 flex items-center justify-center">
+                    <i class="fas fa-lock mr-2"></i>
+                    Proceed to Checkout
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endif %} {% endblock %}

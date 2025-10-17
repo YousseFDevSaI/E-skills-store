@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/png" href="https://ugc.production.linktr.ee/0912d603-0b6f-4be2-9f26-10005b04cac3_ESLSCA-LOGO-BLEU-HD---Planete.png" />
+        <title>{% block title %}E-Skills - ESLSCA{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+            }
+            .navbar-container {
+                position: fixed;
+                top: 1.5rem;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 50;
+                padding: 0.5rem;
+                background: rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(10px);
+                border-radius: 100px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                border: 1px solid rgba(229, 231, 235, 0.5);
+            }
+            .nav-item {
+                display: inline-flex;
+                align-items: center;
+                padding: 0.75rem 1.5rem;
+                color: #64748b;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                border-radius: 100px;
+            }
+            .nav-item:hover {
+                color: #2563eb;
+            }
+            .nav-item.active {
+                background-color: #fff;
+                color: #2563eb;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            }
+            .auth-container {
+                position: fixed;
+                top: 1.5rem;
+                right: 1.5rem;
+                z-index: 50;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                padding: 0.5rem;
+                background: rgba(255, 255, 255, 0.8);
+                backdrop-filter: blur(10px);
+                border-radius: 100px;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                border: 1px solid rgba(229, 231, 235, 0.5);
+            }
+            .auth-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                padding: 0.5rem 1.25rem;
+                font-weight: 500;
+                border-radius: 100px;
+                transition: all 0.2s ease;
+            }
+            .auth-button-primary {
+                background-color: #2563eb;
+                color: white;
+            }
+            .auth-button-primary:hover {
+                background-color: #1d4ed8;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.06);
+            }
+            .auth-button-secondary {
+                color: #64748b;
+                background-color: transparent;
+            }
+            .auth-button-secondary:hover {
+                color: #2563eb;
+                background-color: rgba(37, 99, 235, 0.05);
+            }
+            .username-badge {
+                padding: 0.5rem 1rem;
+                background-color: rgba(37, 99, 235, 0.1);
+                color: #2563eb;
+                border-radius: 100px;
+                font-weight: 500;
+            }
+            .logo-container {
+                position: fixed;
+                top: 1.5rem;
+                left: 1.5rem;
+                z-index: 50;
+            }
+            @media (max-width: 768px) {
+                .navbar-container {
+                    bottom: 1.5rem;
+                    top: auto;
+                }
+                .nav-text {
+                    display: none;
+                }
+                .nav-icon {
+                    display: inline-block;
+                }
+                .auth-container {
+                    padding: 0.25rem;
+                }
+                .auth-button {
+                    padding: 0.5rem;
+                }
+                .username-badge {
+                    display: none;
+                }
+            }
+            @media (min-width: 769px) {
+                .nav-text {
+                    display: inline-block;
+                }
+                .nav-icon {
+                    display: none;
+                }
+            }
+        </style>
+        {% block extra_css %}{% endblock %}
+    </head>
+    <body class="bg-gray-50">
+        <!-- Logo -->
+        <div class="logo-container">
+            <a href="{{ url_for('main.index') }}" class="flex items-center">
+                <img src="https://ugc.production.linktr.ee/0912d603-0b6f-4be2-9f26-10005b04cac3_ESLSCA-LOGO-BLEU-HD---Planete.png" alt="ESLSCA Logo" class="h-10 w-auto" />
+                <span class="text-xl font-bold text-blue-900 ml-2">E-Skills</span>
+            </a>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="navbar-container">
+            <div class="flex space-x-1">
+                <a href="{{ url_for('main.index') }}" class="nav-item {% if request.endpoint == 'main.index' %}active{% endif %}">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span class="nav-text">Home</span>
+                </a>
+                <a href="{{ url_for('main.about') }}" class="nav-item {% if request.endpoint == 'main.about' %}active{% endif %}">
+                    <i class="fas fa-info-circle nav-icon"></i>
+                    <span class="nav-text">About</span>
+                </a>
+                <a href="{{ url_for('courses.index') }}" class="nav-item {% if request.endpoint == 'courses.index' %}active{% endif %}">
+                    <i class="fas fa-book nav-icon"></i>
+                    <span class="nav-text">Courses</span>
+                </a>
+                <a href="{{ url_for('main.contact') }}" class="nav-item {% if request.endpoint == 'main.contact' %}active{% endif %}">
+                    <i class="fas fa-envelope nav-icon"></i>
+                    <span class="nav-text">Contact</span>
+                </a>
+            </div>
+        </nav>
+
+        <!-- Auth Buttons -->
+        <div class="auth-container">
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('cart.view') }}" class="auth-button auth-button-secondary">
+                <i class="fas fa-shopping-cart nav-icon"></i>
+                <span class="nav-text">Cart</span>
+            </a>
+            <span class="username-badge">{{ current_user.username }}</span>
+            <a href="{{ url_for('auth.logout') }}" class="auth-button auth-button-secondary">
+                <i class="fas fa-sign-out-alt nav-icon"></i>
+                <span class="nav-text">Logout</span>
+            </a>
+            {% else %}
+            <a href="{{ url_for('auth.login') }}" class="auth-button auth-button-secondary">
+                <i class="fas fa-sign-in-alt nav-icon"></i>
+                <span class="nav-text">Login</span>
+            </a>
+            <a href="{{ url_for('auth.register') }}" class="auth-button auth-button-primary">
+                <i class="fas fa-user-plus nav-icon"></i>
+                <span class="nav-text">Register</span>
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 mt-20">
+            {% for category, message in messages %}
+            <div class="p-4 mb-4 rounded-lg {% if category == 'error' %}bg-red-100 border-l-4 border-red-500 text-red-700{% elif category == 'success' %}bg-green-100 border-l-4 border-green-500 text-green-700{% else %}bg-blue-100 border-l-4 border-blue-500 text-blue-700{% endif %}" role="alert">
+                <div class="flex items-center">
+                    {% if category == 'error' %}
+                    <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                    {% elif category == 'success' %}
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    {% else %}
+                    <i class="fas fa-info-circle text-blue-500 mr-2"></i>
+                    {% endif %}
+                    <p>{{ message }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+        <!-- Main Content -->
+        <main class="pt-16">{% block content %}{% endblock %}</main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-900 text-white mt-12">
+            <div class="max-w-7xl mx-auto py-12 px-4">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div>
+                        <img src="https://ugc.production.linktr.ee/0912d603-0b6f-4be2-9f26-10005b04cac3_ESLSCA-LOGO-BLEU-HD---Planete.png" alt="ESLSCA Logo" class="h-12 w-auto mb-4" />
+                        <p class="text-gray-400">Empowering minds through quality education</p>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                        <ul class="space-y-2">
+                            <li><a href="{{ url_for('main.about') }}" class="text-gray-400 hover:text-white transition-colors duration-200">About Us</a></li>
+                            <li><a href="{{ url_for('courses.index') }}" class="text-gray-400 hover:text-white transition-colors duration-200">Courses</a></li>
+                            <li><a href="{{ url_for('main.contact') }}" class="text-gray-400 hover:text-white transition-colors duration-200">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                        <ul class="space-y-2 text-gray-400">
+                            <li>Email: info@eslsca.edu.eg</li>
+                            <li>Phone: +20 123 456 789</li>
+                            <li>Address: Cairo, Egypt</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold mb-4">Follow Us</h3>
+                        <div class="flex space-x-4">
+                            <a href="https://www.facebook.com/ESLSCAEgypt/" class="text-gray-400 hover:text-white transition-colors duration-200">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://www.instagram.com/eslscaeg/" class="text-gray-400 hover:text-white transition-colors duration-200">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                    <p>&copy; 2024 eSkills - ESLSCA. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        {% block extra_js %}{% endblock %}
+    </body>
+</html>

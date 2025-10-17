@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}eSkills - Home{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Welcome to eSkills</h1>
+        <p class="text-xl text-gray-600 mb-8">Discover and enroll in high-quality online courses from leading institutions.</p>
+        <a href="{{ url_for('courses.index') }}" 
+           class="inline-flex items-center px-6 py-3 bg-primary text-white rounded-full hover:bg-primary-dark transition-colors duration-200 transform hover:scale-105">
+            <i class="bi bi-search me-2"></i>
+            Browse All Courses
+        </a>
+    </div>
+
+    <!-- Featured Courses -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Featured Courses</h2>
+        {% if error %}
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for course in courses %}
+            <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                {% if course.media and course.media.image %}
+                <div class="aspect-video">
+                    <img src="{{ course.media.image.raw }}" 
+                         alt="{{ course.name }}" 
+                         class="w-full h-full object-cover">
+                </div>
+                {% endif %}
+                <div class="p-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                            {{ course.org }}
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">{{ course.name }}</h3>
+                    <p class="text-gray-600 mb-4 line-clamp-2">{{ course.short_description }}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-lg font-bold text-primary">
+                            {% if course.price > 0 %}
+                                {{ course.currency }} {{ "%.2f"|format(course.price) }}
+                            {% else %}
+                                Free
+                            {% endif %}
+                        </span>
+                        <a href="{{ url_for('courses.detail', course_id=course.id) }}" 
+                           class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors duration-200">
+                            Learn More
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-full text-center py-8">
+                <p class="text-gray-600">No courses available at the moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

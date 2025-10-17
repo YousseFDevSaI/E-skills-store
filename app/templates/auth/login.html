@@ -1,0 +1,91 @@
+{% extends "base.html" %} {% block title %}eSkills - Login{% endblock %} {% block extra_css %}
+<style>
+    .light-mode {
+        background-color: #f8fafc;
+        color: #1a1a1a;
+    }
+    .form-input {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        color: #1a1a1a;
+    }
+    .form-input::placeholder {
+        color: #94a3b8;
+    }
+    .form-input:focus {
+        border-color: #3b82f6;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+    }
+    .btn-primary {
+        background-color: #3b82f6;
+        color: white;
+    }
+    .btn-primary:hover {
+        background-color: #2563eb;
+    }
+    .btn-outline {
+        border: 1px solid #e2e8f0;
+        background-color: #ffffff;
+        color: #64748b;
+    }
+    .btn-outline:hover {
+        background-color: #f8fafc;
+    }
+</style>
+{% endblock %} {% block content %}
+<div class="min-h-screen light-mode flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-2xl shadow-xl">
+        <div class="flex flex-col items-center gap-2">
+            <div class="flex size-11 shrink-0 items-center justify-center rounded-full border border-gray-200" aria-hidden="true">
+                <img src="https://ugc.production.linktr.ee/0912d603-0b6f-4be2-9f26-10005b04cac3_ESLSCA-LOGO-BLEU-HD---Planete.png" alt="ESLSCA Logo" class="h-8 w-8 rounded-full" />
+            </div>
+            <div class="text-center">
+                <h2 class="mt-2 text-2xl font-semibold tracking-tight text-gray-900">Welcome back</h2>
+                <p class="mt-2 text-sm text-gray-600">Sign in to your account to continue learning</p>
+            </div>
+        </div>
+
+        <form method="POST" class="mt-8 space-y-6">
+            <div class="space-y-4">
+                <div>
+                    <label for="email" class="sr-only">Email</label>
+                    <input id="email" name="email" type="email" required class="form-input w-full px-4 py-3 rounded-lg text-sm" placeholder="hi@yourcompany.com" />
+                </div>
+
+                <div>
+                    <label for="password" class="sr-only">Password</label>
+                    <input id="password" name="password" type="password" required class="form-input w-full px-4 py-3 rounded-lg text-sm" placeholder="Enter your password" />
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+                    <label for="remember-me" class="ml-2 block text-sm text-gray-600"> Remember me </label>
+                </div>
+
+                <div class="text-sm">
+                    <a href="#" class="font-medium text-blue-600 hover:text-blue-500"> Forgot password? </a>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary w-full flex justify-center py-3 px-4 rounded-lg text-sm font-medium transition-colors duration-200">Sign in</button>
+
+            <div class="relative">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <div class="relative flex justify-center text-sm"></div>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="text-sm text-gray-600">
+                    Don't have an account?
+                    <a href="{{ url_for('auth.register') }}" class="text-blue-600 hover:text-blue-500 ml-1"> Register here </a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
